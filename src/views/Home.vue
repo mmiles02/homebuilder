@@ -80,7 +80,7 @@ export default {
       this.error = false
       if (this.hash(this.username) == 'e5ee640a' && this.hash(this.password) == 'b0e181c6') {
         this.$router.push({ name: 'builder' })
-        console.log("enter")
+        // console.log("enter")
         // router.push({ name: 'builder' })
         // window.location.href = 'builder'
       }
