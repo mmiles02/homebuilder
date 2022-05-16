@@ -12,5 +12,9 @@ module.exports = {
       title: 'Builder',
       chunks: [ 'chunk-vendors', 'chunk-common', 'builder' ]
     }
-  }
+  },
+
+  transpileDependencies: [
+    'vuetify'
+  ]
 }
