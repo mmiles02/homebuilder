@@ -1,6 +1,6 @@
 <template>
   <div style="position: absolute">
-    <img src="../assets/logo.png" :height="height" :width="width" draggable="false">
+    <img src="../assets/logo.png" :style="'transform: rotate(' + rotate + 'deg)'" :height="height" :width="width" draggable="false">
   </div>
 </template>
 
@@ -10,11 +10,14 @@ export default {
 
   props: {
     height: Number,
-    width: Number
+    width: Number,
+    rotate: {
+      type: Number,
+      default: 0
+    }
   }
 }
 </script>
 
 <style scoped>
-
 </style>

@@ -7,18 +7,76 @@
         </v-col>
       </v-row>
 
-      <v-row style="padding: 20px">
+      <v-row style="padding-left: 20px; padding-right: 20px; padding-top: 20px">
         <v-col align="center">
           <template>
             <v-toolbar dense>
-              <v-btn-toggle
-                  v-model="toggle_multiple"
-                  group
-              >
-                <v-btn v-for="(item, index) in apartment_items" v-bind:key="index" :value=index>
-                  {{ item }}
-                </v-btn>
-              </v-btn-toggle>
+              <v-row>
+                <v-col>
+                  <v-btn-toggle
+                      v-model="selected_item"
+                      group
+                  >
+                    <v-btn v-for="(item, index) in apartment_items" v-bind:key="index" :value=index>
+                      {{ item }}
+                    </v-btn>
+                  </v-btn-toggle>
+                </v-col>
+              </v-row>
+            </v-toolbar>
+            <v-toolbar dense>
+              <v-row>
+                <v-col>
+                  <v-btn-toggle
+                    v-model="fine_selected_item"
+                    group
+                    >
+                    <v-btn v-for="(item, index) in apartment_items" v-bind:key="index" :value="index">
+                      {{ item }}
+                    </v-btn>
+                  </v-btn-toggle>
+                </v-col>
+              </v-row>
+            </v-toolbar>
+          </template>
+        </v-col>
+      </v-row>
+      <v-row style="padding-left: 20px; padding-right: 20px; padding-bottom: 20px">
+        <v-col align="center">
+          <template>
+            <v-toolbar dense>
+              <v-row>
+                <v-col>
+                  <v-btn style="font-size: 30px;" @click="changeSize(false)">
+                    -
+                  </v-btn>
+                  <v-btn style="font-size: 30px;" @click="changeSize(true)">
+                    +
+                  </v-btn>
+                </v-col>
+
+                <v-col>
+
+                  <v-btn style="font-size: 30px;" @click="rotate(true)">
+                    ↺
+                  </v-btn>
+                  <v-btn style="font-size: 30px;" @click="rotate(false)">
+                    ↻
+                  </v-btn>
+                </v-col>
+
+                <v-col>
+                  <v-btn style="background-color: red; color: white;" v-if="!delete_confirm" @click="delete_confirm = !delete_confirm">
+                    Delete
+                  </v-btn>
+                  <v-btn style="background-color: green; color: white;" v-if="delete_confirm" @click="deleteShape">
+                    ✓
+                  </v-btn>
+                  <v-btn style="background-color: red; color: white;" v-if="delete_confirm" @click="delete_confirm = !delete_confirm">
+                    X
+                  </v-btn>
+                </v-col>
+              </v-row>
             </v-toolbar>
           </template>
         </v-col>
@@ -34,14 +92,6 @@
         </div>
 
 
-
-        <v-row class="other">
-          <v-col>
-            X: {{ x }}, Y: {{ y }}
-          </v-col>
-        </v-row>
-
-
         <v-row
             v-for="shape in current_shapes"
             v-bind:key="shape.z_index"
@@ -50,7 +100,11 @@
             @mousemove="moveShape"
         >
           <v-col>
-            <Couch :height="Math.abs(shape.y_end - shape.y_start)" :width="Math.abs(shape.x_end - shape.x_start)"></Couch>
+            <Couch
+                :height="Math.abs(shape.y_end - shape.y_start)"
+                :width="Math.abs(shape.x_end - shape.x_start)"
+                :rotate="shape.rotate"
+            ></Couch>
           </v-col>
         </v-row>
       </div>
@@ -95,6 +149,7 @@ export default {
     return {
       show: false,
       password: '',
+      delete_confirm: false,
 
       dragging: false,
       current_shape_index: 0,
@@ -113,29 +168,17 @@ export default {
           x_start: 0,
           y_start: 0,
           x_end: 0,
-          y_end: 0
+          y_end: 0,
+          rotate: 0
         }
       ],
-
-
-
-
-      apartment_items: ['Couch', 'TV', 'Coffee Table'],
-      dropdown_font: [
-          { text: 'Arial' },
-          { text: 'Calibri' },
-          { text: 'Courier' },
-          { text: 'Verdana' },
-        ],
-        dropdown_edit: [
-          { text: '100%' },
-          { text: '75%' },
-          { text: '50%' },
-          { text: '25%' },
-          { text: '0%' },
-        ],
-        toggle_exclusive: 2,
-        toggle_multiple: [1, 2, 3],
+      apartment_items: [
+          'Couch', 'TV', 'Coffee Table', 'TV Stand',
+          'Lamp', 'Side Table', 'Arm Chair', 'Mirror',
+          'Dresser', 'Desk', 'Desk Chair'
+      ],
+      selected_item: 'Couch',
+      fine_selected_item: 'Red'
     }
   },
 
@@ -150,7 +193,8 @@ export default {
         x_start: event.x,
         y_start: event.y,
         x_end: event.x,
-        y_end: event.y
+        y_end: event.y,
+        rotate: 0
       })
       this.z_index_counter += 1
       this.current_shape_index = this.current_shapes.length - 1
@@ -186,9 +230,6 @@ export default {
     },
 
     startMove(shape, event) {
-      console.log("start move")
-      console.log(shape)
-      console.log(event)
       this.current_shape_index = this.current_shapes.indexOf(shape)
       shape.z_index = this.z_index_counter
       this.z_index_counter += 1
@@ -199,14 +240,43 @@ export default {
 
     moveShape(event) {
       if (this.moving) {
-        // console.log(event.y - this.move_y)
-        // console.log(event.x - this.move_x)
-        // this.current_shapes[this.current_shape_index].y_start = event.y
-        // this.current_shapes[this.current_shape_index].x_start = event.x
-        this.current_shapes[this.current_shape_index].y_start += (event.y - this.move_y)
-        this.current_shapes[this.current_shape_index].y_end += (event.y - this.move_y)
-        this.current_shapes[this.current_shape_index].x_start += (event.x - this.move_x)
-        this.current_shapes[this.current_shape_index].x_end += (event.x - this.move_x)
+        let x_movement = event.x - this.move_x
+        let y_movement = event.y - this.move_y
+        this.move_x = event.x
+        this.move_y = event.y
+
+        this.current_shapes[this.current_shape_index].x_start += x_movement
+        this.current_shapes[this.current_shape_index].y_start += y_movement
+        this.current_shapes[this.current_shape_index].x_end += x_movement
+        this.current_shapes[this.current_shape_index].y_end += y_movement
+      }
+    },
+
+    deleteShape() {
+      console.log("deleting")
+      console.log(this.current_shapes)
+      console.log(this.current_shape_index)
+      this.current_shapes.splice(this.current_shape_index)
+      console.log(this.current_shapes)
+      this.current_shape_index = this.current_shapes.length - 1
+      this.delete_confirm = !this.delete_confirm
+    },
+
+    rotate(clockwise) {
+      if (clockwise) {
+        this.current_shapes[this.current_shape_index].rotate -= 5
+      } else {
+        this.current_shapes[this.current_shape_index].rotate += 5
+      }
+    },
+
+    changeSize(increase) {
+      if (increase) {
+        this.current_shapes[this.current_shape_index].x_end += 10
+        this.current_shapes[this.current_shape_index].y_end += 10
+      } else {
+        this.current_shapes[this.current_shape_index].x_end -= 10
+        this.current_shapes[this.current_shape_index].y_end -= 10
       }
     }
   }
