@@ -79,10 +79,7 @@ export default {
     checkPassword() {
       this.error = false
       if (this.hash(this.username) == 'e5ee640a' && this.hash(this.password) == 'b0e181c6') {
-        this.$router.push({ name: 'builder' })
-        // console.log("enter")
-        // router.push({ name: 'builder' })
-        // window.location.href = 'builder'
+        this.$router.push({ name: 'about', params: { locked: false } })
       }
       else {
         this.error = true

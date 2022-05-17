@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '@/views/Home.vue'
-import Builder from '@/views/Builder'
+import Builder from '@/views/Builder.vue'
+import About from '@/views/About.vue'
 
 Vue.use(VueRouter)
 
@@ -16,7 +17,15 @@ const routes = [
     path: '/builder',
     name: 'builder',
     component: Builder,
+    props: true,
     meta: { title: 'Builder' }
+  },
+  {
+    path: '/about',
+    name: 'about',
+    component: About,
+    props: true,
+    meta: { title: 'About' }
   }
 ]
 
