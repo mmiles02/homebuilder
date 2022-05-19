@@ -1,7 +1,7 @@
 <template>
   <v-row class="header-background">
     <v-col class="title" style="vertical-align: middle">
-      <img src="../assets/house.png">
+      <img src="../assets/house.png" @click="goHome">
       HomeBuilder
     </v-col>
   </v-row>
@@ -9,7 +9,13 @@
 
 <script>
 export default {
-  name: "HeaderPage"
+  name: "HeaderPage",
+
+  methods: {
+    goHome() {
+      this.$router.push({ name: 'home' })
+    }
+  }
 }
 </script>
 
@@ -30,5 +36,8 @@ img {
   width: 70px;
   vertical-align: middle;
   padding-bottom: 10px
+}
+img:hover {
+  cursor: pointer;
 }
 </style>
