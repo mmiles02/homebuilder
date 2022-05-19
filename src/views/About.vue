@@ -18,6 +18,12 @@
           <h3 style="width: 700px;">
             In this builder, you will have the ability to add a bunch of different types of furniture to our new apartment to test for fitting,
             style, and other things that may float your boat.
+            If you want me to add furniture, just find a birds eye view of it and send it to me and I can put it in.
+            If you find any issues with the builder, let me know and I will fix it ASAP.
+            I love you and happy building ♡.
+          </h3>
+          <br>
+          <h3 style="width: 700px;">
             When you are ready, click <strong>BEGIN</strong> down below to start.
           </h3>
         </v-col>

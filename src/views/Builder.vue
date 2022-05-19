@@ -1,5 +1,5 @@
 <template>
-  <v-row>
+  <v-row v-if="!locked">
     <v-col>
 
       <v-row style="padding-left: 20px; padding-right: 20px; padding-top: 20px">
@@ -174,7 +174,7 @@ export default {
 
   mounted: async function() {
     if (this.locked) {
-      // this.$router.push({ name: 'home' })
+      this.$router.push({ name: 'home' })
     }
     window.addEventListener('mouseup', this.stopDrag)
   },
