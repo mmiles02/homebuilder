@@ -1,5 +1,5 @@
 <template>
-  <v-row v-if="!locked">
+  <v-row>
     <v-col>
 
       <v-row style="padding-left: 20px; padding-right: 20px; padding-top: 20px">
@@ -12,7 +12,7 @@
                       v-model="selected_item"
                       group
                   >
-                    <v-btn v-for="(item, index) in apartment_items" v-bind:key="index" :value=index>
+                    <v-btn v-for="(item, index) in apartment_items" v-bind:key="index" :value=index style="font-size: 8pt">
                       {{ item }}
                     </v-btn>
                   </v-btn-toggle>
@@ -27,8 +27,8 @@
                     v-model="fine_selected_item"
                     group
                     >
-                    <v-btn v-for="(item, index) in apartment_subitems[selected_item]" v-bind:key="index" :value="index">
-                      {{ item }}
+                    <v-btn v-for="(item, index) in apartment_subitems[selected_item]" v-bind:key="index" :value="parseInt(index)">
+                      {{ item[0] }}
                     </v-btn>
                   </v-btn-toggle>
                 </v-col>
@@ -43,6 +43,12 @@
             <v-toolbar dense>
               <v-row>
                 <v-col>
+                  <v-btn style="background-color: cadetblue; color: white" @click="addApartmentItem">
+                    Add
+                  </v-btn>
+                </v-col>
+
+                <v-col>
                   <v-btn style="font-size: 30px;" @click="changeSize(false)">
                     -
                   </v-btn>
@@ -53,10 +59,10 @@
 
                 <v-col>
 
-                  <v-btn style="font-size: 30px;" @click="rotate(true)">
+                  <v-btn style="font-size: 30px;" @mouseup="rotate(true)" @mousedown="holdRotate(true)">
                     ↺
                   </v-btn>
-                  <v-btn style="font-size: 30px;" @click="rotate(false)">
+                  <v-btn style="font-size: 30px;" @mouseup="rotate(false)" @mousedown="holdRotate(false)">
                     ↻
                   </v-btn>
                 </v-col>
@@ -174,7 +180,7 @@ export default {
 
   mounted: async function() {
     if (this.locked) {
-      this.$router.push({ name: 'home' })
+      // this.$router.push({ name: 'home' })
     }
     window.addEventListener('mouseup', this.stopDrag)
   },
@@ -244,25 +250,90 @@ export default {
       apartment_items: [
           'Couch', 'TV', 'Coffee Table', 'TV Stand',
           'Lamp', 'Side Table', 'Arm Chair', 'Mirror',
-          'Dresser', 'Desk', 'Desk Chair', 'Ottoman', 'Bed'
+          'Dresser', 'Desk', 'Desk Chair', 'Ottoman',
+          'Bed', 'Rug', 'Bookshelf'
       ],
       selected_item: 0,
       apartment_subitems: {
-        0: ['L Shaped', 'Bench Shaped'],
-        1: ['Big', 'Small'],
-        2: ['Style 1', 'Style 2', 'Style 3'],
-        3: ['Rounded', 'Rectangle'],
-        4: ['Normal'],
-        5: ['Square', 'Dark Round', 'Light Round'],
-        6: ['Light', 'Dark'],
-        7: ['Standing'],
-        8: ['Normal'],
-        9: ['Square', 'L Shaped'],
-        10: ['Normal'],
-        11: ['Smooth', 'Deep Button'],
-        12: ['King']
+        0: {
+          0: ['L Shaped', 8.5, 5.5],
+          1: ['Bench Shaped', 8.5, 3]
+        },
+        1: {
+          0: ['Big', 4.8, .5],
+          1: ['Small', .75, 2.3]
+        },
+        2: {
+          0: ['Style 1', 4, 2],
+          1: ['Style 2', 3.5, 2],
+          2: ['Style 3', 3.5, 2]
+        },
+        3: {
+          0: ['Rounded', 5, 1.5],
+          1: ['Rectangle', 6, 2]
+        },
+        4: {
+          0: ['Normal', 1.5, 1.5]
+        },
+        5: {
+          0: ['Square', 2, 1.5],
+          1: ['Dark Round', 2, 2],
+          2: ['Light Round', 1.5, 1.4]
+        },
+        6: {
+          0: ['Light', 3, 3.25],
+          1: ['Dark', 3, 3],
+          2: ['Reclining', 3.15, 3.3]
+        },
+        7: {
+          0: ['Standing', 1, 1]
+        },
+        8: {
+          0: ['Wide', 4.66, 1.5],
+          1: ['Skinny', 3, 1.5],
+          2: ['Wide (Skinny Style)', 4.66, 1.5]
+        },
+        9: {
+          0: ['Square', 4, 2],
+          1: ['L Shaped', 4, 4]
+        },
+        10: {
+          0: ['Normal', 2.25, 2.25]
+        },
+        11: {
+          0: ['Smooth', 2.33, 1.66],
+          1: ['Deep Button', 3.5, 2.4]
+        },
+        12: {
+          0: ['King', 6.33, 6.66]
+        },
+        13: {
+          0: ['Distressed Foliage', 6, 8],
+          1: ['Green', 3, 5],
+          2: ['Gray', 5, 7]
+        },
+        14: {
+          0: ['Ikea', 2.6, 1]
+        }
       },
-      fine_selected_item: 0
+      // apartment_subitems: {
+      //   0: ['L Shaped', 'Bench Shaped'],
+      //   1: ['Big', 'Small'],
+      //   2: ['Style 1', 'Style 2', 'Style 3'],
+      //   3: ['Rounded', 'Rectangle'],
+      //   4: ['Normal'],
+      //   5: ['Square', 'Dark Round', 'Light Round'],
+      //   6: ['Light', 'Dark'],
+      //   7: ['Standing'],
+      //   8: ['Normal'],
+      //   9: ['Square', 'L Shaped'],
+      //   10: ['Normal'],
+      //   11: ['Smooth', 'Deep Button'],
+      //   12: ['King']
+      // },
+      fine_selected_item: 0,
+
+      hold_rotate: true
     }
   },
 
@@ -331,8 +402,10 @@ export default {
               return 'lightarmchair'
             case 1:
               return 'darkarmchair'
+            case 2:
+              return 'recliningchair'
             default:
-              return 'lightarmchair'
+              return 'recliningchair'
           }
         case 7:
           switch (shape.sub_item) {
@@ -345,6 +418,10 @@ export default {
           switch (shape.sub_item) {
             case 0:
               return 'dresser'
+            case 1:
+              return 'dresser2'
+            case 2:
+              return 'dresser2'
             default:
               return 'dresser'
           }
@@ -380,11 +457,68 @@ export default {
             default:
               return 'bed'
           }
+        case 13:
+          switch (shape.sub_item) {
+            case 0:
+              return 'distressedfoliagerug'
+            case 1:
+              return 'greenrug'
+            case 2:
+              return 'grayrug'
+            default:
+              return 'distressedfoliagerug'
+          }
+        case 14:
+          switch (shape.sub_item) {
+            case 0:
+              return 'ikeabookshelf'
+            default:
+              return 'ikeabookshelf'
+          }
         default:
           return ''
       }
     },
+
+    addApartmentItem() {
+      let x_st = 500
+      let y_st = 200
+      let x_en = x_st + (this.apartment_subitems[this.selected_item][this.fine_selected_item][1] * this.pixels_per_foot)
+      let y_en = y_st + (this.apartment_subitems[this.selected_item][this.fine_selected_item][2] * this.pixels_per_foot)
+      if (this.livingroom) {
+        this.livingroom_current_shapes.push({
+          item: this.selected_item,
+          sub_item: this.fine_selected_item,
+          z_index: this.livingroom_z_index_counter,
+          x_start: x_st,
+          y_start: y_st,
+          x_end: x_en,
+          y_end: y_en,
+          rotate: 0
+        })
+        this.livingroom_z_index_counter += 1
+        this.livingroom_current_shape_index = this.livingroom_current_shapes.length - 1
+      } else {
+        this.bedroom_current_shapes.push({
+          item: this.selected_item,
+          sub_item: this.fine_selected_item,
+          z_index: this.bedroom_z_index_counter,
+          x_start: x_st,
+          y_start: y_st,
+          x_end: x_en,
+          y_end: y_en,
+          rotate: 0
+        })
+        this.bedroom_z_index_counter += 1
+        this.bedroom_current_shape_index = this.bedroom_current_shapes.length - 1
+      }
+      this.saveApartmentItems()
+    },
+
     startDrag(event) {
+      if (this.selected_item == undefined) {
+        return
+      }
       this.dragging = true
       this.x = event.clientX
       this.y = event.clientY
@@ -499,10 +633,10 @@ export default {
 
     deleteShape() {
       if (this.livingroom) {
-        this.livingroom_current_shapes.splice(this.livingroom_current_shape_index)
+        this.livingroom_current_shapes.splice(this.livingroom_current_shape_index, 1)
         this.livingroom_current_shape_index = this.livingroom_current_shapes.length - 1
       } else {
-        this.bedroom_current_shapes.splice(this.bedroom_current_shape_index)
+        this.bedroom_current_shapes.splice(this.bedroom_current_shape_index, 1)
         this.bedroom_current_shape_index = this.bedroom_current_shapes.length - 1
       }
       this.delete_confirm = !this.delete_confirm
@@ -510,6 +644,7 @@ export default {
     },
 
     rotate(clockwise) {
+      this.hold_rotate = false
       if (clockwise) {
         if (this.livingroom) {
           this.livingroom_current_shapes[this.livingroom_current_shape_index].rotate -= 5
@@ -526,6 +661,33 @@ export default {
 
       }
       this.saveApartmentItems()
+    },
+
+    holdRotate(clockwise) {
+      this.hold_rotate = true
+      setTimeout(() => {
+        var interval = setInterval(() => {
+          if (this.hold_rotate) {
+            if (clockwise) {
+              if (this.livingroom) {
+                this.livingroom_current_shapes[this.livingroom_current_shape_index].rotate -= 5
+              } else {
+                this.bedroom_current_shapes[this.bedroom_current_shape_index].rotate -= 5
+              }
+
+            } else {
+              if (this.livingroom) {
+                this.livingroom_current_shapes[this.livingroom_current_shape_index].rotate += 5
+              } else {
+                this.bedroom_current_shapes[this.bedroom_current_shape_index].rotate += 5
+              }
+            }
+            this.saveApartmentItems()
+          } else {
+            clearInterval(interval)
+          }
+        }, 50)
+      }, 500)
     },
 
     changeSize(increase) {
