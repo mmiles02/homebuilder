@@ -12,7 +12,7 @@
                       v-model="selected_item"
                       group
                   >
-                    <v-btn v-for="(item, index) in apartment_items" v-bind:key="index" :value=index style="font-size: 8pt">
+                    <v-btn v-for="(item, index) in apartment_items" v-bind:key="index" :value=index style="font-size: 7pt">
                       {{ item }}
                     </v-btn>
                   </v-btn-toggle>
@@ -251,7 +251,7 @@ export default {
           'Couch', 'TV', 'Coffee Table', 'TV Stand',
           'Lamp', 'Side Table', 'Arm Chair', 'Mirror',
           'Dresser', 'Desk', 'Desk Chair', 'Ottoman',
-          'Bed', 'Rug', 'Bookshelf'
+          'Bed', 'Rug', 'Bookshelf', 'Decorations'
       ],
       selected_item: 0,
       apartment_subitems: {
@@ -314,6 +314,12 @@ export default {
         },
         14: {
           0: ['Ikea', 2.6, 1]
+        },
+        15: {
+          0: ['Potted Plant', 1, 1],
+          1: ['Hanging Plant', 1, 1],
+          2: ['Square Wicker Basket', 1.5, 1],
+          3: ['Round Wicker Basket', 1.5, 1]
         }
       },
       // apartment_subitems: {
@@ -474,6 +480,19 @@ export default {
               return 'ikeabookshelf'
             default:
               return 'ikeabookshelf'
+          }
+        case 15:
+          switch (shape.sub_item) {
+            case 0:
+              return 'pottedplant'
+            case 1:
+              return 'hangingplant'
+            case 2:
+              return 'squarewickerbasket'
+            case 3:
+              return 'roundwickerbasket'
+            default:
+              return 'pottedplant'
           }
         default:
           return ''
